@@ -131,7 +131,16 @@ node generate-secrets.js admin user1 user2 user3
 node generate-secrets.js --totp-only newuser1 newuser2
 ```
 
-Follow the provided instructions to add the generated TOTP keys to your authenticator app like Google Authenticator and 1Password.
+**Add TOTP Keys to Your Authenticator App:**
+
+The script will output setup URLs and secret keys for each generated TOTP user. Add these to your preferred authenticator app like 1Password or Google Authenticator:
+
+**Example: Adding to 1Password:**
+
+Create a *One-Time Password* field, then enter the output string (like `otpauth://totp/PocketChest%3Axxxx?secret=xxxxxxxxxxxxxxxxxxx&issuer=PocketChest&algorithm=SHA1&digits=6&period=30`) into that field.
+Fill in the frontend domain to enable autofill.
+![1Password-TOTP](assets/1Password-TOTP.png)
+
 #### Configure Secrets and Variables
 
 **1. Configure TOTP Setting in `pocket-chest-backend/wrangler.jsonc`:**
