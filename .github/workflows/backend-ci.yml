@@ -1,0 +1,176 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [master, main, develop]
+    paths:
+      - "pocket-chest-backend/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    branches: [master, main, develop]
+    paths:
+      - "pocket-chest-backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-format:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./pocket-chest-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "./pocket-chest-backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript type checking
+        run: npx tsc --noEmit
+
+      # Add ESLint/Prettier if they exist in the project
+      - name: Check for linting configuration
+        id: check-lint
+        run: |
+          if [ -f "package.json" ] && npm list eslint >/dev/null 2>&1; then
+            echo "has-eslint=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-eslint=false" >> $GITHUB_OUTPUT
+          fi
+
+          if [ -f "package.json" ] && npm list prettier >/dev/null 2>&1; then
+            echo "has-prettier=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-prettier=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run ESLint
+        if: steps.check-lint.outputs.has-eslint == 'true'
+        run: npx eslint . --ext .ts,.js
+
+      - name: Check Prettier formatting
+        if: steps.check-lint.outputs.has-prettier == 'true'
+        run: npx prettier --check .
+
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    defaults:
+      run:
+        working-directory: ./pocket-chest-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./pocket-chest-backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+        env:
+          # Test environment variables
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET || 'test-jwt-secret-for-github-actions' }}
+          REQUIRE_TOTP: "false"
+          NODE_ENV: "test"
+
+      # Note: Coverage is disabled due to Cloudflare Workers environment limitations
+      # The @vitest/coverage-v8 package uses Node.js APIs not available in Workers runtime
+      # See: https://developers.cloudflare.com/workers/testing/vitest-integration/known-issues/
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: |
+            pocket-chest-backend/test-results/
+          retention-days: 7
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./pocket-chest-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "./pocket-chest-backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run dependency vulnerability check
+        uses: actions/dependency-review-action@v4
+        if: github.event_name == 'pull_request'
+
+  build-check:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, test]
+
+    defaults:
+      run:
+        working-directory: ./pocket-chest-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "./pocket-chest-backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Wrangler configuration
+        run: npx wrangler deploy --dry-run --compatibility-date=2025-01-01
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || 'dummy-token-for-dry-run' }}
+
+      - name: Generate TypeScript types
+        run: npm run cf-typegen || echo "Type generation skipped - requires Cloudflare credentials"

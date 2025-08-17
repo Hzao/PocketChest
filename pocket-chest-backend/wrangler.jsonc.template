@@ -1,0 +1,49 @@
+/**
+ * PocketChest Backend Configuration Template
+ *
+ * SETUP INSTRUCTIONS:
+ * 1. Copy this file: cp wrangler.jsonc.template wrangler.jsonc
+ * 2. Replace <your-database-id> with your actual D1 database ID
+ * 3. Update bucket_name if you used a different name
+ * 4. Configure custom domain routes if needed
+ * 5. The wrangler.jsonc file will be ignored by git for security
+ *
+ * For more details on configuration, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "pocket-chest-backend",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-08-13",
+	"observability": {
+		"enabled": true,
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "pocket-chest",
+			"database_id": "<your-database-id>",
+		},
+	],
+	"r2_buckets": [
+		{
+			"bucket_name": "pocket-chest",
+			"binding": "R2_STORAGE",
+		},
+	],
+	"vars": {
+		"REQUIRE_TOTP": "true",
+	},
+	// Uncomment and configure for custom domain:
+	// "routes": [
+	// 	{
+	// 		"pattern": "api.yourdomain.com",
+	// 		"custom_domain": true
+	// 	}
+	// ],
+	"workers_dev": true,
+	"triggers": {
+		"crons": ["0 * * * *"],
+	},
+}

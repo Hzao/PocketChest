@@ -1,0 +1,59 @@
+name: Backend Tests
+
+on:
+  push:
+    branches: [master, main, develop]
+    paths:
+      - "pocket-chest-backend/**"
+      - ".github/workflows/backend-tests.yml"
+  pull_request:
+    branches: [master, main, develop]
+    paths:
+      - "pocket-chest-backend/**"
+      - ".github/workflows/backend-tests.yml"
+
+jobs:
+  test:
+    name: Run Backend Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    defaults:
+      run:
+        working-directory: ./pocket-chest-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: "./pocket-chest-backend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript type checking
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test
+        env:
+          # Test environment variables
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET || 'test-jwt-secret-for-github-actions' }}
+          REQUIRE_TOTP: "false"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: |
+            pocket-chest-backend/test-results/
+          retention-days: 7

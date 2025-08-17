@@ -1,0 +1,41 @@
+/**
+ * IMPORTANT SECURITY WARNING:
+ * Before pushing to remote, run the following command to avoid committing the wrangler.jsonc file.
+ * git update-index --assume-unchanged pocket-chest-backend/wrangler.jsonc
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "pocket-chest-backend",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-08-13",
+	"observability": {
+		"enabled": true,
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "pocket-chest",
+			"database_id": "<your-database-id>",
+		},
+	],
+	"r2_buckets": [
+		{
+			"bucket_name": "pocket-chest",
+			"binding": "R2_STORAGE",
+		},
+	],
+	"vars": {
+		"REQUIRE_TOTP": "true",
+	},
+	// Uncomment and configure for custom domain:
+	// "routes": [
+	// 	{
+	// 		"pattern": "api.yourdomain.com",
+	// 		"custom_domain": true
+	// 	}
+	// ],
+	"workers_dev": true,
+	"triggers": {
+		"crons": ["0 * * * *"],
+	},
+}

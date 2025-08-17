@@ -1,0 +1,179 @@
+# Dependencies
+node_modules/
+*/node_modules/
+jspm_packages/
+bower_components
+
+# Build outputs
+out/
+.next/
+dist/
+build/
+build/Release
+
+# Environment files - IMPORTANT for open source
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+!.env.example
+!.env.*.template
+
+# Secrets and configuration
+wrangler.toml
+!wrangler.jsonc.template
+*.secret
+*.key
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+lib-cov
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.cache
+.temp
+
+# Testing
+.nyc_output
+.vscode-test
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Build tools and task runners
+.grunt
+.lock-wscript
+
+# parcel-bundler cache (https://parceljs.org/)
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Snowpack dependency directory
+web_modules/
+
+# VuePress build output
+.vuepress/dist
+
+# Docusaurus cache and generated files
+.docusaurus
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local development
+.local
+
+# Cloudflare
+.wrangler/
+wrangler.toml.backup
+.dev.vars*
+!.dev.vars.example 
