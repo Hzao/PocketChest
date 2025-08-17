@@ -132,7 +132,7 @@ node generate-secrets.js --totp-only newuser1 newuser2
 ```
 
 **Script Features:**
-- **JWT_SECRET**: Secure random key for token signing. You should a randomly generated JWT Secret for security.
+- **JWT_SECRET**: Secure random key for token signing. You should use a randomly generated JWT secret for security.
 - **Multiple TOTP Users**: Generate multiple users at once with setup instructions
 - **Add Users Later**: Use `--totp-only` flag to generate additional TOTP keys
 
