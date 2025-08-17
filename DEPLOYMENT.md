@@ -131,18 +131,14 @@ node generate-secrets.js admin user1 user2 user3
 node generate-secrets.js --totp-only newuser1 newuser2
 ```
 
-**Add TOTP Keys to Your Authenticator App:**
+**Script Features:**
+- **JWT_SECRET**: Secure random key for token signing. You should a randomly generated JWT Secret for security.
+- **Multiple TOTP Users**: Generate multiple users at once with setup instructions
+- **Add Users Later**: Use `--totp-only` flag to generate additional TOTP keys
 
-The script will output setup URLs and secret keys for each generated TOTP user. Add these to your preferred authenticator app like 1Password or Google Authenticator:
-
-**Example: Adding to 1Password:**
-
-Create a *One-Time Password* field, then enter the output string (like `otpauth://totp/PocketChest%3Axxxx?secret=xxxxxxxxxxxxxxxxxxx&issuer=PocketChest&algorithm=SHA1&digits=6&period=30`) into that field.
-Fill in the frontend domain to enable autofill.
-![1Password-TOTP](assets/1Password-TOTP.png)
+**Multiple Users Supported**: The TOTP system supports unlimited users with different TOTP secrets. Format: `key1:secret1,key2:secret2,key3:secret3`. Any user with a valid TOTP token can access the system.
 
 #### Configure Secrets and Variables
-
 **1. Configure TOTP Setting in `pocket-chest-backend/wrangler.jsonc`:**
 
 ```jsonc
@@ -169,12 +165,17 @@ wrangler secret put TOTP_SECRETS
 
 **Note**: If prompted "Do you want to create a new Worker with that name and add secrets to it?", choose **Y** (yes).
 
-**Script Features:**
-- **JWT_SECRET**: Secure random key for token signing
-- **Multiple TOTP Users**: Generate multiple users at once with setup instructions
-- **Add Users Later**: Use `--totp-only` flag to generate additional TOTP keys
 
-**Multiple Users Supported**: The TOTP system supports unlimited users with different TOTP secrets. Format: `key1:secret1,key2:secret2,key3:secret3`. Any user with a valid TOTP token can access the system.
+**3. Add TOTP Keys to Your Authenticator App:**
+
+The script will output setup URLs and secret keys for each generated TOTP user. Add these to your preferred authenticator app like 1Password or Google Authenticator:
+
+**Example: Adding to 1Password:**
+
+Create a *One-Time Password* field, then enter the output string (like `otpauth://totp/PocketChest%3Axxxx?secret=xxxxxxxxxxxxxxxxxxx&issuer=PocketChest&algorithm=SHA1&digits=6&period=30`) into that field.
+Fill in the frontend domain to enable autofill.
+![1Password-TOTP](assets/1Password-TOTP.png)
+
 
 **💡 Use Case Guide:**
 - **Private/Team Use**: Enable TOTP (`"REQUIRE_TOTP": "true"`) for secure access with known users
