@@ -60,14 +60,14 @@ Save the database ID from the output. Update `pocket-chest-backend/wrangler.json
 wrangler r2 bucket create pocket-chest
 ```
 
-Update `pocket-chest-backend/wrangler.jsonc` with the bucket binding:
+If you used a different bucket name, update the bucket name in `pocket-chest-backend/wrangler.jsonc`. Otherwise, no configuration changes are needed.
 
 ```jsonc
 {
   "r2_buckets": [
     {
-      "bucket_name": "pocket-chest",
-      "binding": "R2_STORAGE"
+      "bucket_name": "pocket-chest", // The name you used in the `wrangler r2 bucket create` command
+      "binding": "R2_STORAGE" // Just use `R2_STORAGE` regardless of bucket_name
     }
   ]
 }
