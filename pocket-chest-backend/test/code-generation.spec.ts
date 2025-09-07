@@ -10,7 +10,7 @@ describe('Code Generation', () => {
 		}
 
 		// Check that no code contains the letter "O"
-		const codesWithO = codes.filter(code => code.includes('O'));
+		const codesWithO = codes.filter((code) => code.includes('O'));
 		expect(codesWithO).toHaveLength(0);
 	});
 
@@ -23,7 +23,7 @@ describe('Code Generation', () => {
 
 		// Check that at least some codes contain the number "0"
 		// With 1000 attempts and 6 characters each, we should get some "0"s
-		const codesWith0 = codes.filter(code => code.includes('0'));
+		const codesWith0 = codes.filter((code) => code.includes('0'));
 		expect(codesWith0.length).toBeGreaterThan(0);
 	});
 
@@ -36,7 +36,7 @@ describe('Code Generation', () => {
 
 	it('should generate codes using only allowed characters', () => {
 		const allowedChars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ0123456789'; // Note: no "O"
-		
+
 		for (let i = 0; i < 100; i++) {
 			const code = generateRetrievalCode();
 			for (const char of code) {
